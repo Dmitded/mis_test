@@ -1,0 +1,72 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:13
+    ports:
+      - 5430:5432
+    environment:
+      POSTGRES_USER: mis_user
+      POSTGRES_DB: mis_db
+    env_file:
+      - deploy/.env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mis_user -d mis_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  web:
+    build: .
+    command: >
+      sh -c "python manage.py wait_for_db &&
+             python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    env_file:
+      - deploy/.env
+  docs:
+    image: swaggerapi/swagger-ui
+    volumes:
+    - ./docs/:/docs
+    container_name: mis_docs
+    ports:
+    - 4321:8080
+    environment:
+    - SWAGGER_JSON=/docs/swagger.yaml
+    network_mode: "bridge"
+  test:
+    build: .
+    command: >
+      sh -c "python manage.py wait_for_db &&
+             pytest"
+    depends_on:
+      - db
+    env_file:
+      - deploy/.env
+  filling:
+    build: .
+    command: >
+      sh -c "python manage.py wait_for_db &&
+             python manage.py fill_test_data"
+    depends_on:
+      - db
+    env_file:
+      - deploy/.env
+    profiles:
+      - donotstart
+  add_admin:
+    build: .
+    command: >
+      sh -c "python manage.py wait_for_db &&
+             python manage.py createsuperuser --noinput"
+    depends_on:
+      - db
+    env_file:
+      - deploy/.env
+    profiles:
+      - donotstart

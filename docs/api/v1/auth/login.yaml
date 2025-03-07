@@ -1,0 +1,48 @@
+post:
+  summary: Аутентификация пользователя и получение токенов
+  tags:
+    - Логин
+  description: Возвращает access и refresh токены для аутентификации.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            username:
+              type: string
+              description: Имя пользователя
+            password:
+              type: string
+              description: Пароль
+          required:
+            - username
+            - password
+  responses:
+    '200':
+      description: Успешная аутентификация
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              access:
+                type: string
+                description: Access токен
+              refresh:
+                type: string
+                description: Refresh токен
+              role:
+                type: string
+                description: Роль пользователя
+              doctor_id:
+                type: integer
+                description: ID доктора (если роль doctor)
+              patient_id:
+                type: integer
+                description: ID пациента (если роль patient)
+    '400':
+      description: Неверные данные
+    '401':
+      description: Неверные учетные данные

@@ -1,0 +1,37 @@
+post:
+  summary: Добавление доктора в клинику
+  tags:
+    - Доктор
+  description: Добавляет доктора в указанную клинику.
+  security:
+    - Bearer: []
+  parameters:
+    - name: id
+      in: path
+      required: true
+      description: ID доктора
+      schema:
+        type: integer
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            clinic_id:
+              type: integer
+              description: ID клиники
+          required:
+            - clinic_id
+  responses:
+    "200":
+      description: Доктор успешно добавлен в клинику
+    "400":
+      description: Неверные данные
+    "401":
+      description: Неавторизованный доступ
+    "403":
+      description: Доступ запрещен
+    "404":
+      description: Доктор или клиника не найдены

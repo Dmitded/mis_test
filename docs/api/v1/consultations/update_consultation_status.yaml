@@ -1,0 +1,71 @@
+patch:
+  summary: Изменение статуса консультации
+  tags:
+    - Консультации
+  description: Обновляет статус консультации.
+  security:
+    - Bearer: []
+  parameters:
+    - name: id
+      in: path
+      required: true
+      description: ID консультации
+      schema:
+        type: integer
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+              example: completed
+              description: Новый статус консультации
+          required:
+            - status
+  responses:
+    "200":
+      description: Статус успешно обновлен
+      type: object
+      content:
+        application/json:
+          schema:
+            properties:
+              id:
+                type: integer
+                example: 1
+                description: ID консультации
+              doctor:
+                type: integer
+                example: 12
+                description: ID доктора
+              patient:
+                type: integer
+                example: 34
+                description: ID пациента
+              created_at:
+                type: string
+                format: date-time
+                description: Дата создания консультации
+              started_at:
+                type: string
+                format: date-time
+                description: Дата начала консультации
+              finished_at:
+                type: string
+                format: date-time
+                description: Дата конца консультации
+              status:
+                type: string
+                example: completed
+                description: Статус консультации
+    "400":
+      description: Неверные данные
+    "401":
+      description: Неавторизованный доступ
+    "403":
+      description: Доступ запрещен
+    "404":
+      description: Консультация не найдена

@@ -1,0 +1,68 @@
+get:
+  summary: Получение списка консультаций
+  tags:
+    - Консультации
+  description: Возвращает список консультаций с возможностью фильтрации и сортировки.
+  security:
+    - Bearer: []
+  parameters:
+    - name: status
+      in: query
+      description: Фильтр по статусу консультации
+      schema:
+        type: string
+    - name: doctor_first_name
+      in: query
+      description: Фильтр по имени доктора
+      schema:
+        type: string
+    - name: patient_first_name
+      in: query
+      description: Фильтр по имени пациента
+      schema:
+        type: string
+    - name: sort_by
+      in: query
+      description: Поле для сортировки (например, date)
+      schema:
+        type: string
+  responses:
+    "200":
+      description: Успешный запрос
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                  description: ID консультации
+                doctor:
+                  type: integer
+                  example: 12
+                  description: ID доктора
+                patient:
+                  type: integer
+                  example: 34
+                  description: ID пациента
+                created_at:
+                  type: string
+                  format: date-time
+                  description: Дата создания консультации
+                started_at:
+                  type: string
+                  format: date-time
+                  description: Дата начала консультации
+                finished_at:
+                  type: string
+                  format: date-time
+                  description: Дата конца консультации
+                status:
+                  type: string
+                  example: completed
+                  description: Статус консультации
+    "401":
+      description: Неавторизованный доступ

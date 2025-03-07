@@ -1,0 +1,32 @@
+post:
+  summary: Обновление access токена
+  tags:
+    - Логин
+  description: Возвращает новый access токен с использованием refresh токена.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            refresh:
+              type: string
+              description: Refresh токен
+          required:
+            - refresh
+  responses:
+    "200":
+      description: Успешное обновление токена
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              access:
+                type: string
+                description: Новый access токен
+    "400":
+      description: Неверные данные
+    "401":
+      description: Неверный или истекший refresh токен
