@@ -3,7 +3,7 @@ from django.db.models import Q
 
 from apps.domain.entities.consultation import Consultation
 from apps.domain.repositories.consultation_repository import ConsultationRepository
-from apps.infrastructure.db.models import Consultation as ConsultationModel
+from apps.infrastructure.db.models import Consultation as ConsultationModel, Profile
 
 
 class ConsultationRepositoryImpl(ConsultationRepository):
@@ -36,7 +36,7 @@ class ConsultationRepositoryImpl(ConsultationRepository):
             status=consultation.status
         )
 
-    def update(self, consultation: ConsultationModel) -> ConsultationModel:
+    def update(self, consultation_id: int, new_status: str, profile: Profile) -> ConsultationModel:
         """Обновление статуса консультации
 
         Args:
@@ -45,8 +45,14 @@ class ConsultationRepositoryImpl(ConsultationRepository):
         Returns:
             ConsultationModel: консультация
         """
-        consultation_model = ConsultationModel.objects.get(id=consultation.id)
-        consultation_model.status = consultation.status
+        consultation_model = ConsultationModel.objects.filter(id=consultation_id)
+        if profile.role == 'doctor':
+            consultation_model = consultation_model.filter(doctor=profile.doctor)
+        elif profile.role == 'patient':
+            consultation_model = consultation_model.filter(doctor=profile.patient)
+
+        consultation_model = consultation_model.get()
+        consultation_model.status = new_status
         consultation_model.save()
         return consultation_model
 
@@ -58,16 +64,22 @@ class ConsultationRepositoryImpl(ConsultationRepository):
         """
         ConsultationModel.objects.filter(id=consultation_id).delete()
 
-    def list_all(self, filters={}) -> List[ConsultationModel]:
-        """Получение списка консультаций
+    def list_all(self, filters: dict, profile: Profile) -> List[ConsultationModel]:
+        """Список консультаций
 
         Args:
-            filters (dict, optional): фильтры. Defaults to {}.
+            filters (dict): фильтры запроса
+            profile (Profile): запрашивающий пользователь
 
         Returns:
             List[ConsultationModel]: список консультаций
         """
         queryset = ConsultationModel.objects.all()
+        if profile.role == 'doctor':
+            queryset = queryset.filter(doctor=profile.doctor)
+        elif profile.role == 'patient':
+            queryset = queryset.filter(doctor=profile.patient)
+
         if filters:
             if filters.get('status'):
                 queryset = queryset.filter(status=filters['status'])

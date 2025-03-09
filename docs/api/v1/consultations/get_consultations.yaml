@@ -11,19 +11,19 @@ get:
       description: Фильтр по статусу консультации
       schema:
         type: string
-    - name: doctor_first_name
+    - name: doctor_name
       in: query
       description: Фильтр по имени доктора
       schema:
         type: string
-    - name: patient_first_name
+    - name: patient_name
       in: query
       description: Фильтр по имени пациента
       schema:
         type: string
-    - name: sort_by
+    - name: sort_asc
       in: query
-      description: Поле для сортировки (например, date)
+      description: Направление сортировки по дате создания
       schema:
         type: string
   responses:

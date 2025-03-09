@@ -10,15 +10,13 @@ class ListConsultationsUseCase:
     def __init__(self, consultation_repository):
         self.consultation_repository = consultation_repository
 
-    def execute(self, filters={}):
-        return self.consultation_repository.list_all(filters=filters)
+    def execute(self, filters, profile):
+        return self.consultation_repository.list_all(filters=filters, profile=profile)
 
 
 class UpdateConsultationStatusUseCase:
     def __init__(self, consultation_repository):
         self.consultation_repository = consultation_repository
 
-    def execute(self, consultation_id, new_status):
-        consultation = self.consultation_repository.get_by_id(consultation_id)
-        consultation.status = new_status
-        return self.consultation_repository.update(consultation)
+    def execute(self, consultation_id, new_status, profile):
+        return self.consultation_repository.update(consultation_id, new_status, profile)

@@ -48,25 +48,5 @@ services:
       - db
     env_file:
       - deploy/.env
-  filling:
-    build: .
-    command: >
-      sh -c "python manage.py wait_for_db &&
-             python manage.py fill_test_data"
-    depends_on:
-      - db
-    env_file:
-      - deploy/.env
-    profiles:
-      - donotstart
-  add_admin:
-    build: .
-    command: >
-      sh -c "python manage.py wait_for_db &&
-             python manage.py createsuperuser --noinput"
-    depends_on:
-      - db
-    env_file:
-      - deploy/.env
     profiles:
       - donotstart
